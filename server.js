@@ -12,7 +12,7 @@ io.on('connection', function(socket){
 	console.log('Connected')
 
 	socket.on('draw', function(position){
-		console.log('drawing');
+
 		socket.broadcast.emit('draw',position);
 	});
 });

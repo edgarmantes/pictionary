@@ -2,6 +2,8 @@ var pictionary = function() {
     var socket = io();
     var canvas, context;
 
+    var drawing = false;
+
     var draw = function(position) {
         context.beginPath();
         context.arc(position.x, position.y,
@@ -14,13 +16,22 @@ var pictionary = function() {
     canvas[0].width = canvas[0].offsetWidth;
     canvas[0].height = canvas[0].offsetHeight;
 
+    canvas.on('mousedown', function(event){
+        drawing = true;
+    });
 
-    canvas.on('mousedown', function(event) {
-        var offset = canvas.offset();
-        var position = {x: event.pageX - offset.left,
-                        y: event.pageY - offset.top};
-        draw(position);
-        socket.emit('draw', position)
+    canvas.on('mousemove', function(event) {
+        if (drawing === true){
+            var offset = canvas.offset();
+            var position = {x: event.pageX - offset.left,
+                            y: event.pageY - offset.top};
+            draw(position);
+            socket.emit('draw', position)
+        }
+    });
+
+    canvas.on('mouseup', function(event){
+        drawing = false;
     });
     socket.on('draw', draw);
 };
